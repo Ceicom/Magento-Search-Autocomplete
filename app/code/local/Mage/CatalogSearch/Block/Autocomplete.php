@@ -57,7 +57,7 @@ class Mage_CatalogSearch_Block_Autocomplete extends Mage_Core_Block_Abstract
             }
 
             $html .=  '<li title="'.$this->escapeHtml($item['title']).'" class="'.$item['row_class'].'">'
-                . '<a href="'.$item['url_path'].'"><img src="'.$item['image_url'].'" /><span>'.$this->escapeHtml($item['title']).'</span></a></li>';
+                . '<a href="'.$item['url_path'].'"><div style="max-width:30%; float:left;" class="product-photo-search"><img src="'.$item['image_url'].'" /></div><div style="max-width:69%; float:left; margin-top:6px;padding-left:3px" class="name-product-search"><span>'.$this->escapeHtml($item['title']). "<br />". "<span style='display:inline-block; margin-top:6px;' class='price-custom-span'>Price: " . number_format((float)$item['price'], 2, '.', '') . " €" .'</span></span></div></a></li>';
         }
 
         $html.= '</ul>';
@@ -73,7 +73,8 @@ class Mage_CatalogSearch_Block_Autocomplete extends Mage_Core_Block_Abstract
                             ->addAttributeToFilter('name', array(
                                 'like' => '%'.$query.'%'
                             ))
-                            ->setPageSize(5)
+                            ->addAttributeToSelect('price')
+                            ->setPageSize(8)
                             ->addAttributeToSelect('small_image')
                             ->addAttributeToSelect('url_path')
                             ->addAttributeToFilter('visibility', 4);
@@ -83,8 +84,9 @@ class Mage_CatalogSearch_Block_Autocomplete extends Mage_Core_Block_Abstract
             foreach ($collection as $item) {
                 $_data = array(
                     'title' => $item->getName(),
+                    'price' => $item->getPrice(),
                     'row_class' => (++$counter)%2?'odd':'even',
-                    'image_url' => (string)Mage::helper('catalog/image')->init($item, 'small_image')->resize(50),
+                    'image_url' => (string)Mage::helper('catalog/image')->init($item, 'small_image')->resize(70),
                     'url_path' => $item->getUrlPath()
                 );
 
